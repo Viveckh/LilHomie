@@ -1,5 +1,6 @@
 *data*
 *__pycache__*
+*.json*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
