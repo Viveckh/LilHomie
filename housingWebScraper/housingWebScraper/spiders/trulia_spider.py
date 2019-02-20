@@ -11,6 +11,11 @@ class TruliaSpider(scrapy.Spider):
 
     def parse(self, response):
         for state in response.css('ul.all-states > li'):
+            # For now only extract data for New York tri states, remove this condition if you want to crawl data for all states
+            stateName = extract_with_css(state, 'a.clickable::text')
+            if "New Jersey" not in stateName and "New York" not in stateName and "Connecticut" not in stateName:
+                continue
+
             counties_page_url = extract_with_css(state, 'a.clickable::attr("href")')
             if counties_page_url is not None:
                 yield response.follow(counties_page_url, self.parse_counties)
@@ -35,22 +40,18 @@ class TruliaSpider(scrapy.Spider):
                 if "trulia.com/p/" not in properties_page_url:
                     yield response.follow(properties_page_url, self.parse_properties)
                 else:
-                    #yield response.follow(properties_page_url, self.parse_property)
-                    yield {
-                        'url': properties_page_url
-                    }    
+                    yield response.follow(properties_page_url, self.parse_property)
 
     def parse_properties(self, response):
         for property in response.css('ul.all-properties > li'):
             property_page_url = extract_with_css(property, 'a.clickable::attr("href")')
-            yield {
-                'url': property_page_url
-            }
+            if property_page_url is not None:
+                yield response.follow(property_page_url, self.parse_property)
 
     def parse_property(self, response):
         yield {
-            'name': extract_with_css(response, 'a.clickable::text'),
-            'url': extract_with_css(response, 'a.clickable::attr("href")'),
+            'address': extract_with_css(response, '#propertySummary .addressContainer h1 div[data-role="address"]::text'),
+            'cityState': extract_with_css(response, '#propertySummary .addressContainer h1 span[data-role="cityState"]::text')
         }
 
     
