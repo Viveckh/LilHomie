@@ -21,6 +21,14 @@ NEWSPIDER_MODULE = 'housingWebScraper.spiders'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
+# CSV settings
+CSV_DELIMITER= "|"
+
+# FEED EXPORTING
+FEED_EXPORTERS = {
+    'custom_csv': 'housingWebScraper.exporters.CsvOptionRespectingItemExporter'
+}
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 

@@ -1,4 +1,5 @@
 import scrapy
+from housingWebScraper.itemloaders import TruliaPropertyLoader
 
 def extract_with_css(response, query):
     return response.css(query).get(default='').strip()
@@ -49,9 +50,12 @@ class TruliaSpider(scrapy.Spider):
                 yield response.follow(property_page_url, self.parse_property)
 
     def parse_property(self, response):
+        yield TruliaPropertyLoader.parse(self, response=response)
+        """
         yield {
             'address': extract_with_css(response, '#propertySummary .addressContainer h1 div[data-role="address"]::text'),
             'cityState': extract_with_css(response, '#propertySummary .addressContainer h1 span[data-role="cityState"]::text')
         }
+        """
 
     
