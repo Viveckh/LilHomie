@@ -27,7 +27,7 @@ class TruliaPropertyLoader(ItemLoader):
 
             city_state_zip = extract_with_css(response, '#propertySummary .addressContainer h1 span[data-role="cityState"]::text')
             # Extracts city, state and zip from strings like "Caldwell, NJ 07430" or "New Haven, CT 98930"
-            res = re.findall(r"(?P<city>[A-Za-z\s]*),\s+(?P<state>[A-Z]*)\s+(?P<zip_code>[0-9]*)", city_state_zip)
+            res = re.findall(r"(?P<city>[A-Za-z\s]*),\s+(?P<state>[A-Z]*)\s+(?P<zip_code>[0-9]*)$", city_state_zip)
             if res:
                 (city, state, zip_code) = res[0]
                 loader.add_value('city', city)
@@ -37,6 +37,7 @@ class TruliaPropertyLoader(ItemLoader):
             # Populate property details from the randomized list
             for entry in response.css('div[data-auto-test-id="home-detail"] div[data-auto-test-id="home-details-overview"] ul li'):
                 raw_property_detail = extract_with_css(entry, '::text')
+                print(raw_property_detail)
 
                 # Extract built year if pattern matches - eg. Built in 1995
                 match = re.match(r"\s*Built\s+in\s+(?P<built_year>[0-9]+)\s*$", raw_property_detail)
@@ -44,12 +45,12 @@ class TruliaPropertyLoader(ItemLoader):
                     loader.add_value('built_year', match.group('built_year'))
 
                 # Extract no of bedrooms if matches - eg. 3.5 Beds
-                match = re.match(r"\s*(?P<no_of_bedrooms>[0-9\.]+)\s+Beds\s*$", raw_property_detail)
+                match = re.match(r"\s*(?P<no_of_bedrooms>[0-9\.]+)\s+Bed[s]?\s*$", raw_property_detail)
                 if match is not None:
                     loader.add_value('no_of_bedrooms', match.group('no_of_bedrooms'))
                 
                 # Extract no of baths if matches - eg. 3 Baths
-                match = re.match(r"\s*(?P<no_of_baths>[0-9\.]+)\s+Baths\s*$", raw_property_detail)
+                match = re.match(r"\s*(?P<no_of_baths>[0-9\.]+)\s+Bath[s]?\s*$", raw_property_detail)
                 if match is not None:
                     loader.add_value('no_of_baths', match.group('no_of_baths'))
 
@@ -57,6 +58,14 @@ class TruliaPropertyLoader(ItemLoader):
                 match = re.match(r"\s*(?P<area_sqft>[0-9,\.]+)\s+sqft\s*$", raw_property_detail)
                 if match is not None:
                     loader.add_value('area_sqft', match.group('area_sqft'))
+
+                # Extract lot size if matches - eg. 2,9863.5 acres lot size
+                match = re.match(r"\s*(?P<lot_size>[A-Za-z0-9,\.\s+]+)\s+lot\s+size\s*$", raw_property_detail)
+                if match is not None:
+                    loader.add_value('lot_size', match.group('lot_size'))
+
+            # Property type is the first entry in the home-details-overview list, use this for now, until we determine the analytics and find out what are the various types of properties listed on trulia
+            loader.add_css('property_type', 'div[data-auto-test-id="home-detail"] div[data-auto-test-id="home-details-overview"] > .mbm div:first-of-type ul:first-of-type li:first-of-type::text')
         
             # Populate tax fields
             loader.add_css('tax_year', 'div[data-auto-test-id="home-detail"] > div:nth-last-of-type(1) > .mbm > :nth-child(1) :nth-child(2)::text')

@@ -22,7 +22,7 @@ class Property(scrapy.Item):
     state = scrapy.Field()
     zip_code = scrapy.Field()
     area_sqft = scrapy.Field()
-    lot_size_sqft = scrapy.Field()
+    lot_size = scrapy.Field()
     no_of_stories = scrapy.Field()
     no_of_bedrooms = scrapy.Field()
     no_of_baths = scrapy.Field()
