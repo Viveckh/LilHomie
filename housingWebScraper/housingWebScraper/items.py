@@ -14,6 +14,7 @@ class HousingwebscraperItem(scrapy.Item):
     pass
 
 class Property(scrapy.Item):
+    property_url = scrapy.Field()
     property_type = scrapy.Field()
     built_year = scrapy.Field()
     address = scrapy.Field()
