@@ -1,5 +1,5 @@
 from scrapy.loader import ItemLoader
-from housingWebScraper.items import Property
+from housingWebScraper.items import Property, Transaction
 from scrapy.loader.processors import TakeFirst, Compose, MapCompose, Join
 import re
 
@@ -9,13 +9,13 @@ to_int = Compose(TakeFirst(), int)
 def extract_with_css(response, query):
     return response.css(query).get(default='').strip()
 
-class TruliaPropertyLoader(ItemLoader):
+class TruliaItemsLoader(ItemLoader):
 
-    default_item_class = Property
     default_output_processor = clean_text
 
-    def parse(self, response):
-        loader = TruliaPropertyLoader(selector=response)
+    def parse_property(self, response):
+        # You could've intialized the loader with ItemLoader but then it would not have the customizations you have initialized within this class, like the default output processors
+        loader = TruliaItemsLoader(item=Property(), selector=response)
         
         #Populate the property url to view it later
         loader.add_value('property_url', response.request.url)
@@ -72,3 +72,38 @@ class TruliaPropertyLoader(ItemLoader):
             loader.add_css('tax_amount', 'div[data-auto-test-id="home-detail"] > div:nth-last-of-type(1) > .mbm > :nth-child(2) :nth-child(2)::text')
 
         return loader.load_item()
+
+
+    def parse_transaction(self, transaction, property_url):
+        loader = TruliaItemsLoader(item=Transaction(), selector=transaction)
+
+        loader.add_value('property_url', property_url)
+
+        for detail in transaction.css('div[data-role="toggledContent"] > div.row'):
+            key_selector = 'div.row div:nth-of-type(1)::text'
+            value_selector = 'div.row div:nth-of-type(2)::text'
+            
+            if extract_with_css(detail, key_selector) == 'Recording Date':
+                loader.add_value('recording_date', extract_with_css(detail, value_selector))
+
+            if extract_with_css(detail, key_selector) == 'Contract Date':
+                loader.add_value('contract_date', extract_with_css(detail, value_selector))
+
+            if extract_with_css(detail, key_selector) == 'Sale Price':
+                loader.add_value('price', extract_with_css(detail, value_selector))
+
+            if extract_with_css(detail, key_selector) == 'Transaction Type':
+                loader.add_value('transaction_type', extract_with_css(detail, value_selector))
+
+            if extract_with_css(detail, key_selector) == 'Document Type':
+                loader.add_value('document_type', extract_with_css(detail, value_selector))
+
+            if extract_with_css(detail, key_selector) == 'County Transfer Tax':
+                loader.add_value('county_transfer_tax', extract_with_css(detail, value_selector))
+
+            if extract_with_css(detail, key_selector) == 'Total Transfer Tax':
+                loader.add_value('total_transfer_tax', extract_with_css(detail, value_selector))
+
+        return loader.load_item()
+        
+        

@@ -24,6 +24,9 @@ ROBOTSTXT_OBEY = True
 # CSV settings
 CSV_DELIMITER= "|"
 
+# CSV output folder
+CSV_OUTPUT_FOLDER = "housingWebScraper/output/"
+
 # FEED EXPORTING
 FEED_EXPORTERS = {
     'custom_csv': 'housingWebScraper.exporters.CsvOptionRespectingItemExporter'
@@ -72,9 +75,10 @@ FEED_EXPORTERS = {
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'housingWebScraper.pipelines.HousingwebscraperPipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'housingWebScraper.pipelines.HousingwebscraperPipeline': 300,
+    'housingWebScraper.pipelines.MultiCSVItemPipeline': 300
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html

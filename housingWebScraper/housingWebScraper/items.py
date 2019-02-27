@@ -23,9 +23,9 @@ class Property(scrapy.Item):
     zip_code = scrapy.Field()
     area_sqft = scrapy.Field()
     lot_size = scrapy.Field()
-    no_of_stories = scrapy.Field()
     no_of_bedrooms = scrapy.Field()
     no_of_baths = scrapy.Field()
+    no_of_stories = scrapy.Field()
     parking_type = scrapy.Field()
     no_of_parking_spaces = scrapy.Field()
     heating_type = scrapy.Field()
@@ -33,12 +33,15 @@ class Property(scrapy.Item):
     exterior_type = scrapy.Field()
     tax_year = scrapy.Field()
     tax_amount = scrapy.Field()
-    txn_recording_date = scrapy.Field()
-    txn_contract_date = scrapy.Field()
-    txn_price = scrapy.Field()
-    txn_type = scrapy.Field()
-    txn_document_type = scrapy.Field()
-    txn_county_transfer_tax = scrapy.Field()
-    txn_total_transfer_tax = scrapy.Field()
+
+class Transaction(scrapy.Item):
+    property_url = scrapy.Field()
+    recording_date = scrapy.Field()
+    contract_date = scrapy.Field()
+    price = scrapy.Field()
+    transaction_type = scrapy.Field()
+    document_type = scrapy.Field()
+    county_transfer_tax = scrapy.Field()
+    total_transfer_tax = scrapy.Field()
     
 
