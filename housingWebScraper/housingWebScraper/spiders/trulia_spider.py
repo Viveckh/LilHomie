@@ -50,11 +50,12 @@ class TruliaSpider(scrapy.Spider):
                 yield response.follow(property_page_url, self.parse_property)
 
     def parse_property(self, response):
-        yield TruliaItemsLoader.parse_property(self, response=response)
-        
-        # This has to be handled separately for different property page formats that trulia has
-        for event in response.css('div[data-auto-test-id="home-details-price-history"] > div[data-role="contentWithToggle"]'):
-            if extract_with_css(event, 'div[data-role="toggleArrow"] > div:last-child::text') == 'Sold':
-                yield TruliaItemsLoader.parse_transaction(self, transaction=event, property_url=response.request.url)
+        if extract_with_css(response, '#propertySummary .addressContainer h1 div[data-role="address"]::text') is not None:
+            yield TruliaItemsLoader.parse_property(self, response=response)
+            
+            # This has to be handled separately for different property page formats that trulia has
+            for event in response.css('div[data-auto-test-id="home-details-price-history"] > div[data-role="contentWithToggle"]'):
+                if extract_with_css(event, 'div[data-role="toggleArrow"] > div:last-child::text') == 'Sold':
+                    yield TruliaItemsLoader.parse_transaction(self, transaction=event, property_url=response.request.url)
 
     
