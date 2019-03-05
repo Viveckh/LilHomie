@@ -9,7 +9,6 @@ certifi==2018.11.29
 cffi==1.12.1
 chardet==3.0.4
 colorlover==0.3.0
-conda==4.3.16
 constantly==15.1.0
 cryptography==2.5
 cssselect==1.0.3
