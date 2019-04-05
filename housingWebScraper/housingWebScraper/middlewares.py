@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
-
+#############################
+# Middlewares
 # Define here the models for your spider middleware
 #
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+#
+# Author: (EJ) Vivek Pandey
+# Last Modified: 03/05/2019
+#############################
 
 from scrapy import signals
 

@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
-
+#############################
+# Item Definitions
 # Define here the models for your scraped items
 #
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/items.html
+#
+# Author: (EJ) Vivek Pandey
+# Last Modified: 03/05/2019
+#############################
 
 import scrapy
-
 
 class HousingwebscraperItem(scrapy.Item):
     # define the fields for your item here like:

@@ -1,3 +1,9 @@
+#############################
+# Custom Exporters
+# Author: (EJ) Vivek Pandey
+# Last Modified: 03/05/2019
+#############################
+
 from scrapy.conf import settings
 from scrapy.exporters import CsvItemExporter
 
